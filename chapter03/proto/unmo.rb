@@ -5,10 +5,13 @@ class Unmo
 
   def initialize(name)
     @name = name
-    @responder = RandomResponder.new('Random')
+    @resp_what = WhatResponder.new('What')
+    @resp_random = RandomResponder.new('Random')
+    @responder = @resp_random
   end
 
   def dialogue(input)
+    @responder = rand(2) == 0 ? @resp_what : @resp_random
     @responder.response(input)
   end
 

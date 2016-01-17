@@ -21,10 +21,14 @@ end
 class RandomResponder < Responder
   def initialize(name)
     super
-    @responses = ['今日はさむいね', 'チョコたべたい', 'きのう１０円ひろった']
+    @phrases = File.read('dics/random.txt').split("\n").reject(&:empty?)
   end
 
   def response(input)
-    @responses[rand(@responses.size)]
+    select_random(@phrases)
+  end
+
+  def select_random(ary)
+    ary[rand(ary.size)]
   end
 end

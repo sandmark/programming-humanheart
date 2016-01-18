@@ -1,3 +1,5 @@
+Encoding.default_external = 'UTF-8'
+
 class Dictionary
   attr_reader :random, :pattern
 

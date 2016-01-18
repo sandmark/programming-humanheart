@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require_relative 'unmo'
+require_relative 'lib/unmo'
 
 def prompt(unmo)
   "#{unmo.name}:#{unmo.responder_name}> "

@@ -6,6 +6,16 @@ class Dictionary
     @pattern = File.read('dics/pattern.txt').split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
   end
 
+  def study(input)
+    @random.push input unless @random.include?(input)
+  end
+
+  def save
+    File.open('dics/random.txt', 'w') do |f|
+      f.puts(@random)
+    end
+  end
+
   private
   def to_pattern(line)
     pattern, phrases = line.split('<>')
@@ -23,6 +33,7 @@ class PatternItem
   SEPARATOR = /^((-?\d+)##)?(.*)$/
 
   def initialize(pattern, phrases)
+    @phrases = []
     SEPARATOR =~ pattern
     @modify, @pattern = $2.to_i, $3
     phrases.split('|').each do |phrase|
@@ -41,7 +52,7 @@ class PatternItem
       choices.push(p[:phrase]) if suitable?(p[:need], mood)
     end
 
-    (choises.empty?) ? nil : select_random(choices)
+    (choices.empty?) ? nil : select_random(choices)
   end
 
   def suitable?(need, mood)

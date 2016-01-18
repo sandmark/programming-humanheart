@@ -12,26 +12,22 @@ class Responder
   def response(input, mood)
     ''
   end
-
-  def select_random(ary)
-    ary[rand(ary.size)]
-  end
 end
 
 class WhatResponder < Responder
-  def response(input)
+  def response(input, mood)
     "#{input}ってなに？"
   end
 end
 
 class RandomResponder < Responder
-  def response(input)
+  def response(input, mood)
     select_random(@dictionary.random)
   end
 end
 
 class PatternResponder < Responder
-  def response(input)
+  def response(input, mood)
     @dictionary.pattern.each do |item|
       if m = item.match(input)
         resp = item.choice(mood)

@@ -1,12 +1,11 @@
 # coding: utf-8
-Encoding.default_external = 'UTF-8'
 
 class Dictionary
   attr_reader :random, :pattern
 
   def initialize
-    @random = File.read('dics/random.txt').split("\n").reject(&:empty?)
-    @pattern = File.read('dics/pattern.txt').split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
+    @random = File.read('dics/random.txt', encoding: Encoding::UTF_8).split("\n").reject(&:empty?)
+    @pattern = File.read('dics/pattern.txt', encoding: Encoding::UTF_8).split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
   end
 
   def study(input)

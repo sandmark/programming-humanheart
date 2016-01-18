@@ -18,6 +18,7 @@ class Unmo
   end
 
   def dialogue(input)
+    input.encode!('UTF-8')
     @emotion.update(input)
 
     case rand(100)

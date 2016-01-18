@@ -1,3 +1,4 @@
+# coding: utf-8
 Encoding.default_external = 'UTF-8'
 
 class Dictionary

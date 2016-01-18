@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require_relative 'responder'
 require_relative 'dictionary'
 

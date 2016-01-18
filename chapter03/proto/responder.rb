@@ -9,7 +9,7 @@ class Responder
   end
 
   protected
-  def response(input)
+  def response(input, mood)
     ''
   end
 
@@ -32,9 +32,10 @@ end
 
 class PatternResponder < Responder
   def response(input)
-    @dictionary.pattern.each do |ptn_item|
-      if m = input.match(ptn_item[:pattern])
-        resp = select_random(ptn_item[:phrases].split('|'))
+    @dictionary.pattern.each do |item|
+      if m = item.match(input)
+        resp = item.choice(mood)
+        next if resp.nil?
         return resp.gsub(/%match%/, m.to_s)
       end
     end

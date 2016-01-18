@@ -7,6 +7,7 @@ class Unmo
   def initialize(name)
     @name = name
     @dictionary = Dictionary.new
+    @emotion = Emotion.new(@dictionary)
 
     @resp_what    = WhatResponder.new('What', @dictionary)
     @resp_random  = RandomResponder.new('Random', @dictionary)
@@ -15,6 +16,8 @@ class Unmo
   end
 
   def dialogue(input)
+    @emotion.update(input)
+
     case rand(100)
     when 0..59
       @responder = @resp_pattern
@@ -28,5 +31,46 @@ class Unmo
 
   def responder_name
     @responder.name
+  end
+
+  def mood
+    @emotion.mood
+  end
+end
+
+class Emotion
+  attr_reader :mood
+
+  MOOD_MIN = -15
+  MOOD_MAX = 15
+  MOOD_RECOVERY = 0.5
+
+  def initialize(dictionary)
+    @dictionary = dictionary
+    @mood = 0
+  end
+
+  def update(input)
+    @dictionary.pattern.each do |item|
+      if item.match(input)
+        adjust_mood(item.modify)
+        break
+      end
+    end
+
+    if @mood < 0
+      @mood += MOOD_RECOVERY
+    elsif @mood > 0
+      @mood -= MOOD_RECOVERY
+    end
+  end
+
+  def adjust_mood(val)
+    @mood += val
+    if @mood > MOOD_MAX
+      @mood = MOOD_MAX
+    elsif @mood < MOOD_MIN
+      @mood = MOOD_MIN
+    end
   end
 end

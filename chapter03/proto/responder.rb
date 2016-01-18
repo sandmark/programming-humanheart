@@ -3,12 +3,18 @@
 class Responder
   attr_reader :name
 
-  def initialize(name)
+  def initialize(name, dictionary)
     @name = name
+    @dictionary = dictionary
   end
 
+  protected
   def response(input)
     ''
+  end
+
+  def select_random(ary)
+    ary[rand(ary.size)]
   end
 end
 
@@ -19,16 +25,20 @@ class WhatResponder < Responder
 end
 
 class RandomResponder < Responder
-  def initialize(name)
-    super
-    @phrases = File.read('dics/random.txt').split("\n").reject(&:empty?)
-  end
-
   def response(input)
-    select_random(@phrases)
+    select_random(@dictionary.random)
   end
+end
 
-  def select_random(ary)
-    ary[rand(ary.size)]
+class PatternResponder < Responder
+  def response(input)
+    @dictionary.pattern.each do |ptn_item|
+      if m = input.match(ptn_item[:pattern])
+        resp = select_random(ptn_item[:phrases].split('|'))
+        return resp.gsub(/%match%/, m.to_s)
+      end
+    end
+
+    select_random(@dictionary.random)
   end
 end

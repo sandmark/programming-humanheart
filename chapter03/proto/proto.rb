@@ -3,20 +3,18 @@
 
 require_relative 'unmo'
 
-if $0 == __FILE__
-  def prompt(unmo)
-    "#{unmo.name}:#{unmo.responder_name}> "
-  end
+def prompt(unmo)
+  "#{unmo.name}:#{unmo.responder_name}> "
+end
 
-  puts ('Unmo System prototype : proto')
-  proto = Unmo.new('proto')
+puts ('Unmo System prototype : proto')
+proto = Unmo.new('proto')
 
-  loop do
-    print '> '
-    input = readline.chomp
-    break if input.empty?
+while true
+  print '> '
+  input = readline.chomp
+  break if input.empty?
 
-    response = proto.dialogue(input)
-    puts prompt(proto) + response
-  end
+  response = proto.dialogue(input)
+  puts prompt(proto) + response
 end

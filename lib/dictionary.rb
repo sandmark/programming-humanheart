@@ -8,13 +8,18 @@ class Dictionary
     @pattern = File.read('dics/pattern.txt', encoding: Encoding::UTF_8).split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
   end
 
-  def study(input)
-    @random.push input unless @random.include?(input)
+  def study(input, parts)
+    study_random(input)
+    study_pattern(input, parts)
   end
 
   def save
     File.open('dics/random.txt', 'w') do |f|
       f.puts(@random)
+    end
+
+    File.open('dics/pattern.txt', 'w') do |f|
+      @pattern.each{ |item| f.puts(item.make_line) }
     end
   end
 
@@ -25,6 +30,22 @@ class Dictionary
       nil
     else
       PatternItem.new(pattern, phrases)
+    end
+  end
+
+  def study_random(input)
+    @random.push(input) unless @random.include?(input)
+  end
+
+  def study_pattern(input, parts)
+    parts.each do |word, part|
+      next unless Morph::keyword?(part)
+      duped = @pattern.find{ |item| item.pattern == word }
+      if duped
+        duped.add_phrase(input)
+      else
+        @pattern.push(PatternItem.new(word, input))
+      end
     end
   end
 end
@@ -42,6 +63,18 @@ class PatternItem
       SEPARATOR =~ phrase
       @phrases.push({need: $2.to_i, phrase: $3})
     end
+  end
+
+  def add_phrase(phrase)
+    unless @phrases.find{ |p| p[:phrase] == phrase }
+      @phrases.push({need: 0, phrase: phrase})
+    end
+  end
+
+  def make_line
+    pattern = @modify.to_s + "##" + @pattern
+    phrases = @phrases.map{ |p| p[:need].to_s + "##" + p[:phrase] }
+    "#{pattern}\t#{phrases.join('|')}"
   end
 
   def match(str)

@@ -2,6 +2,7 @@
 
 require_relative 'responder'
 require_relative 'dictionary'
+require_relative 'morph'
 
 class Unmo
   attr_reader :name
@@ -20,6 +21,7 @@ class Unmo
   def dialogue(input)
     input.encode!('UTF-8')
     @emotion.update(input)
+    parts = Morph::analyze(input)
 
     case rand(100)
     when 0..59
@@ -31,7 +33,7 @@ class Unmo
     end
 
     resp = @responder.response(input, @emotion.mood)
-    @dictionary.study(input)
+    @dictionary.study(input, parts)
     resp
   end
 

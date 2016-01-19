@@ -4,9 +4,11 @@ require 'natto'
 
 module MeCab
   Parser = Natto::MeCab.new
+  Charset = Parser.dicts.first.charset
+  Encode = Charset == 'SHIFT-JIS' ? 'SHIFT_JIS' : Charset
 
   def analyze(text)
-    Parser.parse(text)
+    Parser.parse(text.encode(Encode)).encode('UTF-8')
   end
 
   module_function :analyze

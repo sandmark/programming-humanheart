@@ -1,16 +1,29 @@
 # coding: utf-8
 
 class Dictionary
-  attr_reader :random, :pattern
+  attr_reader :random, :pattern, :template
 
   def initialize
     @random = File.read('dics/random.txt', encoding: Encoding::UTF_8).split("\n").reject(&:empty?)
     @pattern = File.read('dics/pattern.txt', encoding: Encoding::UTF_8).split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
+    @template = []
+    File.read('dics/template.txt', encoding: Encoding::UTF_8).each_line do |line|
+      count, template = line.split(/\t/)
+      next if count.nil? or pattern.nil?
+      count = count.to_i
+      @template[count] = [] unless @template[count]
+      @template[count].push(template)
+    end
+  rescue Errno::ENOENT
+    @random = [] unless @random
+    @pattern = [] unless @pattern
+    @template = [] unless @template
   end
 
   def study(input, parts)
     study_random(input)
     study_pattern(input, parts)
+    study_template(parts)
   end
 
   def save
@@ -21,6 +34,15 @@ class Dictionary
     File.open('dics/pattern.txt', 'w') do |f|
       @pattern.each{ |item| f.puts(item.make_line) }
     end
+
+    File.open('dics/template.txt', 'w') do |f|
+      @template.each.with_index do |templates, i|
+        next if templates.nil?
+        templates.each do |template|
+          f.puts("#{i}\t#{template}")
+        end
+      end
+    end
   end
 
   private
@@ -30,6 +52,24 @@ class Dictionary
       nil
     else
       PatternItem.new(pattern, phrases)
+    end
+  end
+
+  def study_template(parts)
+    template = ''
+    count = 0
+    parts.each do |word, part|
+      if Morph::keyword?(part)
+        word = '%noun%'
+        count += 1
+      end
+      template += word
+    end
+    return unless count > 0
+
+    @template[count] = [] unless @template[count]
+    unless @template[count].include?(template)
+      @template[count].push(template)
     end
   end
 

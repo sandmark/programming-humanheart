@@ -25,7 +25,7 @@ class Dictionary
 
   private
   def to_pattern(line)
-    pattern, phrases = line.split('<>')
+    pattern, phrases = line.split(/\t/)
     if pattern.nil? or phrases.nil?
       nil
     else

@@ -47,7 +47,7 @@ class TemplateResponder < Responder
       keywords.push(word) if Morph::keyword?(part)
     end
     count = keywords.size
-    if count > 0 and templates = @dictionary.template(count)
+    if count > 0 and templates = @dictionary.template[count]
       template = select_random(templates)
       template.gsub(/%noun%/){keywords.shift}
     else

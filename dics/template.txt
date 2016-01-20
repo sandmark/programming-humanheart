@@ -1,0 +1,5 @@
+1	%noun%を入れてみた
+1	%noun%でもない
+1	%noun%ですね
+1	%noun%している…！！
+4	%noun%と%noun%で%noun%な%noun%ができるんです

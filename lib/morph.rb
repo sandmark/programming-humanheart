@@ -3,7 +3,7 @@ require_relative 'mecab'
 
 module Morph
   def analyze(text)
-    MeCab::analyze(text).split(/\n/).map{ |line| line.split(/\t/) }
+    MeCab::analyze(text).split(/\n/).map{ |line| line.split(/\t/) }[0...-1]
   end
 
   def keyword?(part)

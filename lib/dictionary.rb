@@ -3,21 +3,14 @@
 class Dictionary
   attr_reader :random, :pattern, :template
 
+  RANDOM = 'dics/random.txt'
+  PATTERN = 'dics/pattern.txt'
+  TEMPLATE = 'dics/template.txt'
+
   def initialize
-    @random = File.read('dics/random.txt', encoding: Encoding::UTF_8).split("\n").reject(&:empty?)
-    @pattern = File.read('dics/pattern.txt', encoding: Encoding::UTF_8).split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
-    @template = []
-    File.read('dics/template.txt', encoding: Encoding::UTF_8).each_line do |line|
-      count, template = line.split(/\t/)
-      next if count.nil? or pattern.nil?
-      count = count.to_i
-      @template[count] = [] unless @template[count]
-      @template[count].push(template)
-    end
-  rescue Errno::ENOENT
-    @random = [] unless @random
-    @pattern = [] unless @pattern
-    @template = [] unless @template
+    load_random
+    load_pattern
+    load_template
   end
 
   def study(input, parts)
@@ -46,6 +39,35 @@ class Dictionary
   end
 
   private
+  def load_template
+    @template = []
+    read_file(TEMPLATE).each_line do |line|
+      count, template = line.split(/\t/)
+      next if count.nil? or pattern.nil?
+      count = count.to_i
+      @template[count] = [] unless @template[count]
+      @template[count].push(template)
+    end
+  rescue Errno::ENOENT
+    @template = []
+  end
+
+  def load_random
+    @random = read_file(RANDOM).split(/\n/).reject(&:empty?)
+  rescue Errno::ENOENT
+    @random = ['こんにちは']
+  end
+
+  def load_pattern
+    @pattern = read_file(PATTERN).split(/\n/).map{ |l| to_pattern(l) }.reject(&:nil?)
+  rescue Errno::ENOENT
+    @pattern = []
+  end
+
+  def read_file(file)
+    File.read(file, encoding: Encoding::UTF_8)
+  end
+
   def to_pattern(line)
     pattern, phrases = line.split(/\t/)
     if pattern.nil? or phrases.nil?

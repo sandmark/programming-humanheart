@@ -55,3 +55,15 @@ class TemplateResponder < Responder
     end
   end
 end
+
+class MarkovResponder < Responder
+  def response(input, parts, mood)
+    keyword, p = parts.find{ |w, part| Morph::keyword?(part) }
+    resp = @dictionary.markov.generate(keyword)
+    unless resp.nil?
+      resp
+    else
+      select_random(@dictionary.random)
+    end
+  end
+end

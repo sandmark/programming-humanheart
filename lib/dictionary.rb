@@ -1,41 +1,37 @@
 # coding: utf-8
 
 class Dictionary
-  attr_reader :random, :pattern, :template
+  attr_reader :random, :pattern, :template, :markov
+
+  RANDOM = 'dics/random.txt'
+  PATTERN = 'dics/pattern.txt'
+  TEMPLATE = 'dics/template.txt'
+  MARKOV = 'dics/markov.dat'
 
   def initialize
-    @random = File.read('dics/random.txt', encoding: Encoding::UTF_8).split("\n").reject(&:empty?)
-    @pattern = File.read('dics/pattern.txt', encoding: Encoding::UTF_8).split("\n").map{ |l| to_pattern(l) }.reject(&:nil?)
-    @template = []
-    File.read('dics/template.txt', encoding: Encoding::UTF_8).each_line do |line|
-      count, template = line.split(/\t/)
-      next if count.nil? or pattern.nil?
-      count = count.to_i
-      @template[count] = [] unless @template[count]
-      @template[count].push(template)
-    end
-  rescue Errno::ENOENT
-    @random = [] unless @random
-    @pattern = [] unless @pattern
-    @template = [] unless @template
+    load_random
+    load_pattern
+    load_template
+    load_markov
   end
 
   def study(input, parts)
     study_random(input)
     study_pattern(input, parts)
     study_template(parts)
+    study_markov(parts)
   end
 
   def save
-    File.open('dics/random.txt', 'w') do |f|
+    File.open(RANDOM, 'w') do |f|
       f.puts(@random)
     end
 
-    File.open('dics/pattern.txt', 'w') do |f|
+    File.open(PATTERN, 'w') do |f|
       @pattern.each{ |item| f.puts(item.make_line) }
     end
 
-    File.open('dics/template.txt', 'w') do |f|
+    File.open(TEMPLATE, 'w') do |f|
       @template.each.with_index do |templates, i|
         next if templates.nil?
         templates.each do |template|
@@ -43,9 +39,54 @@ class Dictionary
         end
       end
     end
+
+    File.open(MARKOV, 'wb') do |f|
+      @markov.save(f)
+    end
   end
 
   private
+  def study_markov(parts)
+    @markov.add_sentence(parts)
+  end
+
+  def load_markov
+    @markov = Markov.new
+    File.open(MARKOV, 'rb') do |f|
+      @markov.load(f)
+    end
+  rescue Errno::ENOENT
+  end
+
+  def load_template
+    @template = []
+    read_file(TEMPLATE).each_line do |line|
+      count, template = line.split(/\t/)
+      next if count.nil? or pattern.nil?
+      count = count.to_i
+      @template[count] = [] unless @template[count]
+      @template[count].push(template)
+    end
+  rescue Errno::ENOENT
+    @template = []
+  end
+
+  def load_random
+    @random = read_file(RANDOM).split(/\n/).reject(&:empty?)
+  rescue Errno::ENOENT
+    @random = ['こんにちは']
+  end
+
+  def load_pattern
+    @pattern = read_file(PATTERN).split(/\n/).map{ |l| to_pattern(l) }.reject(&:nil?)
+  rescue Errno::ENOENT
+    @pattern = []
+  end
+
+  def read_file(file)
+    File.read(file, encoding: Encoding::UTF_8)
+  end
+
   def to_pattern(line)
     pattern, phrases = line.split(/\t/)
     if pattern.nil? or phrases.nil?

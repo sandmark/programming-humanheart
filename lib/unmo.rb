@@ -3,6 +3,7 @@
 require_relative 'responder'
 require_relative 'dictionary'
 require_relative 'morph'
+require_relative 'markov'
 
 class Unmo
   attr_reader :name
@@ -16,6 +17,7 @@ class Unmo
     @resp_random  = RandomResponder.new('Random', @dictionary)
     @resp_pattern = PatternResponder.new('Pattern', @dictionary)
     @resp_template = TemplateResponder.new('Template', @dictionary)
+    @resp_markov = MarkovResponder.new('Markov', @dictionary)
     @responder = @resp_pattern
   end
 
@@ -25,12 +27,14 @@ class Unmo
     parts = Morph::analyze(input)
 
     case rand(100)
-    when 0..39
+    when 0..29
       @responder = @resp_pattern
-    when 40..69
+    when 30..49
       @responder = @resp_template
-    when 70..89
+    when 50..69
       @responder = @resp_random
+    when 70..89
+      @responder = @resp_markov
     else
       @responder = @resp_what
     end

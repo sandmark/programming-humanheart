@@ -2,13 +2,10 @@
 # coding: utf-8
 
 require_relative 'lib/unmo'
+require_relative 'lib/utils'
 
 def prompt(unmo)
   "#{unmo.name}:#{unmo.responder_name}> "
-end
-
-def select_random(ary)
-  ary[rand(ary.size)]
 end
 
 def save(ai, log)

@@ -46,13 +46,13 @@ class Markov
   end
 
   def load(f)
-    @dic = Marshall::load(f)
-    @starts = Marshall::load(f)
+    @dic = Marshal::load(f)
+    @starts = Marshal::load(f)
   end
 
   def save(f)
-    Marshall::dump(@dic, f)
-    Marshall::dump(@starts, f)
+    Marshal::dump(@dic, f)
+    Marshal::dump(@starts, f)
   end
 
   private

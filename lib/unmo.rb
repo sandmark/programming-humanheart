@@ -33,7 +33,7 @@ class Unmo
       @responder = @resp_template
     when 50..69
       @responder = @resp_random
-    when 70..89
+    when 70..95
       @responder = @resp_markov
     else
       @responder = @resp_what

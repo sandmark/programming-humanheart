@@ -3,6 +3,7 @@
 require_relative 'responder'
 require_relative 'dictionary'
 require_relative 'morph'
+require_relative 'markov'
 
 class Unmo
   attr_reader :name

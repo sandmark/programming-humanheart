@@ -55,8 +55,7 @@ class Dictionary
     File.open(MARKOV, 'rb') do |f|
       @markov.load(f)
     end
-  rescue => e
-    puts(e.message)
+  rescue Errno::ENOENT
   end
 
   def load_template

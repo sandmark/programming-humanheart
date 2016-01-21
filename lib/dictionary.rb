@@ -1,34 +1,37 @@
 # coding: utf-8
 
 class Dictionary
-  attr_reader :random, :pattern, :template
+  attr_reader :random, :pattern, :template, :markov
 
   RANDOM = 'dics/random.txt'
   PATTERN = 'dics/pattern.txt'
   TEMPLATE = 'dics/template.txt'
+  MARKOV = 'dics/markov.dat'
 
   def initialize
     load_random
     load_pattern
     load_template
+    load_markov
   end
 
   def study(input, parts)
     study_random(input)
     study_pattern(input, parts)
     study_template(parts)
+    study_markov(parts)
   end
 
   def save
-    File.open('dics/random.txt', 'w') do |f|
+    File.open(RANDOM, 'w') do |f|
       f.puts(@random)
     end
 
-    File.open('dics/pattern.txt', 'w') do |f|
+    File.open(PATTERN, 'w') do |f|
       @pattern.each{ |item| f.puts(item.make_line) }
     end
 
-    File.open('dics/template.txt', 'w') do |f|
+    File.open(TEMPLATE, 'w') do |f|
       @template.each.with_index do |templates, i|
         next if templates.nil?
         templates.each do |template|
@@ -36,9 +39,26 @@ class Dictionary
         end
       end
     end
+
+    File.open(MARKOV, 'wb') do |f|
+      @markov.save(f)
+    end
   end
 
   private
+  def study_markov(parts)
+    @markov.add_sentence(parts)
+  end
+
+  def load_markov
+    @markov = Markov.new
+    File.open(MARKOV, 'rb') do |f|
+      @markov.load(f)
+    end
+  rescue => e
+    puts(e.message)
+  end
+
   def load_template
     @template = []
     read_file(TEMPLATE).each_line do |line|

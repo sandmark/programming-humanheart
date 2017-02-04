@@ -17,7 +17,7 @@ impl Responder {
 
 struct Unmo {
     pub name: String,
-    pub responder: Responder,
+    responder: Responder,
 }
 
 impl Unmo {

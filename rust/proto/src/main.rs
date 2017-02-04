@@ -1,41 +1,9 @@
 use std::io;
 use std::io::Write;
 
-struct Responder {
-    pub name: String,
-}
-
-impl Responder {
-    fn new(name: &str) -> Responder {
-        Responder {name: name.to_string()}
-    }
-
-    fn response(&self, input: String) -> String {
-        format!("{}ってなに？", input)
-    }
-}
-
-struct Unmo {
-    pub name: String,
-    responder: Responder,
-}
-
-impl Unmo {
-    fn new(name: &str) -> Unmo {
-        Unmo {
-            name: name.to_string(),
-            responder: Responder::new("What"),
-        }
-    }
-
-    fn dialogue(&self, input: String) -> String {
-        self.responder.response(input)
-    }
-
-    fn responder_name(&self) -> String {
-        self.responder.name.clone()
-    }
-}
+mod responder;
+mod unmo;
+use unmo::Unmo;
 
 fn prompt(unmo: &Unmo) -> String {
     format!("{}:{}> ", unmo.name, unmo.responder_name())

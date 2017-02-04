@@ -1,15 +1,15 @@
-use responder::Responder;
+use responder::RandomResponder;
 
 pub struct Unmo {
     pub name: String,
-    responder: Responder,
+    responder: RandomResponder,
 }
 
 impl Unmo {
     pub fn new(name: &str) -> Unmo {
         Unmo {
             name: name.to_string(),
-            responder: Responder::new("What"),
+            responder: RandomResponder::new("Random"),
         }
     }
 

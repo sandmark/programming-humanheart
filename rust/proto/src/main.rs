@@ -11,7 +11,7 @@ fn prompt(unmo: &Unmo) -> String {
 
 fn main() {
     println!("Unmo System prototype : proto");
-    let proto = Unmo::new("proto");
+    let mut proto = Unmo::new("proto");
     loop {
         print!("> ");
         io::stdout().flush().ok().expect("failed to flush stdout");

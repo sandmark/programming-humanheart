@@ -2,23 +2,45 @@ extern crate rand;
 
 use self::rand::Rng;
 
+pub trait Responder {
+    fn response(&self, input: String) -> String;
+    fn name(&self) -> String;
+}
+
 pub struct WhatResponder {
-    pub name: String,
+    name: String,
+}
+
+pub struct RandomResponder {
+    name: String,
+    responses: Vec<String>,
+}
+
+impl Responder for WhatResponder {
+    fn name(&self) -> String {
+        self.name.clone()
+    }
+
+    fn response(&self, input: String) -> String {
+        format!("{}ってなに？", input)
+    }
+}
+
+impl Responder for RandomResponder {
+    fn name(&self) -> String {
+        self.name.clone()
+    }
+
+    fn response(&self, input: String) -> String {
+        let n = rand::thread_rng().gen_range(0, self.responses.len());
+        self.responses[n].clone()
+    }
 }
 
 impl WhatResponder {
     pub fn new(name: &str) -> WhatResponder {
         WhatResponder {name: name.to_string()}
     }
-
-    pub fn response(&self, input: String) -> String {
-        format!("{}ってなに？", input)
-    }
-}
-
-pub struct RandomResponder {
-    pub name: String,
-    responses: Vec<String>,
 }
 
 impl RandomResponder {
@@ -30,10 +52,5 @@ impl RandomResponder {
             name: name.to_string(),
             responses: v,
         }
-    }
-
-    pub fn response(&self, input: String) -> String {
-        let n = rand::thread_rng().gen_range(0, self.responses.len());
-        self.responses[n].clone()
     }
 }

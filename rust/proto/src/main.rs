@@ -3,6 +3,7 @@ use std::io::Write;
 
 mod responder;
 mod unmo;
+mod dictionary;
 use unmo::Unmo;
 
 fn prompt(unmo: &Unmo) -> String {

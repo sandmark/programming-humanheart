@@ -4,3 +4,4 @@ dics/*dat
 dics.orig/
 rust/proto/Cargo.lock
 rust/proto/target/
+/python/proto/__pycache__/

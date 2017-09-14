@@ -1,29 +1,4 @@
-class Responder:
-    def __init__(self, name):
-        self._name = name
-
-    def response(self, line):
-        return '{}ってなに？'.format(line)
-
-    @property
-    def name(self):
-        return self._name
-
-class Unmo:
-    def __init__(self, name):
-        self._name = name
-        self._responder = Responder('What')
-
-    def dialogue(self, line):
-        return self._responder.response(line)
-
-    @property
-    def responder_name(self):
-        return self._responder.name
-
-    @property
-    def name(self):
-        return self._name
+from unmo import Unmo
 
 def prompt(unmo):
     return '{}:{}> '.format(unmo.name, unmo.responder_name)

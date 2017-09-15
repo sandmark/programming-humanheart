@@ -1,3 +1,4 @@
+import io
 from random import choice
 
 class Responder:
@@ -21,7 +22,8 @@ class WhatResponder(Responder):
 class RandomResponder(Responder):
     def __init__(self, name):
         super().__init__(name)
-        self._responses = ['今日はさむいね', 'チョコたべたい', 'きのう10円ひろった']
+        with io.open('dics/random.txt', 'r', encoding='utf-8') as f:
+            self._phrases = [line.strip() for line in f.readlines()]
 
     def response(self, line):
-        return choice(self._responses)
+        return choice(self._phrases)
